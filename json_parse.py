@@ -1,7 +1,7 @@
 import requests
 import json
 
-zap_base_url = 'http://localhost:8080'
+zap_base_url = 'http://172.17.0.1:8090'
 
 scan_report_url = f'{zap_base_url}/OTHER/core/other/jsonreport/'
 response = requests.get(scan_report_url)
