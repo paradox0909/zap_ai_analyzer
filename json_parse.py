@@ -9,3 +9,9 @@ scan_results = response.json()
 output_file = 'zap_scan_results.json'
 with open(output_file, 'w') as file:
     json.dump(scan_results, file, indent=4)
+
+if IsADirectoryError :
+    print(response)
+else :
+    print("test fin")
+    
