@@ -29,4 +29,3 @@ try:
 except requests.exceptions.RequestException as e:
     print(f"Error: {e}")
 
-os.system('/Users/paradoxmyung/Desktop/Paradox/zap_ai_analyzer/json_parse.py')
