@@ -19,3 +19,4 @@ print('Active Scan completed')
 print('Hosts: {}'.format(', '.join(zap.core.hosts)))
 print('Alerts: ')
 pprint(zap.core.alerts(baseurl=target))
+s

@@ -1,31 +1,33 @@
-import os
-import requests
 import time
+import os
 from pprint import pprint
 from zapv2 import ZAPv2
 
 apiKey = 'paradox0909'
 target = 'https://public-firing-range.appspot.com'
+zap = ZAPv2(apikey=apiKey, proxies={'http': 'http://127.0.0.1:8080', 'https': 'http://127.0.0.1:8080'})
 
+def get_next_filename(prefix='test_json_', extension='.json'):
+    i = 1
+    while os.path.exists(f"{prefix}{i}{extension}"):
+        i += 1
+    return f"{prefix}{i}{extension}"
 
-zap = ZAPv2(proxies={'http': 'http://172.17.0.1:8090', 'https': 'https://172.17.0.1:8090'})
+def run_spider():
+    print('Spidering target {}'.format(target))
+    scanID = zap.spider.scan(target)
+    while int(zap.spider.status(scanID)) < 100:
+        print('Spider progress %: {}'.format(zap.spider.status(scanID)))
+        time.sleep(1)
+    print('Spider.py scan finished')
+    print('\n'.join(map(str, zap.spider.results(scanID))))
 
-print('Active Scanning target {}'.format(target))
+def run_active_scan():
+    print('Active Scanning target {}'.format(target))
+    scanID = zap.ascan.scan(target)
+    while int(zap.ascan.status(scanID)) < 100:
+        print('Scan progress %: {}'.format(zap.ascan.status(scanID)))
+        time.sleep(5)
 
-scanID = zap.ascan.scan(target, apikey=apiKey)
-
-while int(zap.ascan.status(scanID)) < 100:
-    print('Scan progress %: {}'.format(zap.ascan.status(scanID)))
-    time.sleep(5)
-
-print('Active Scan completed')
-print('Hosts: {}'.format(', '.join(zap.core.hosts())))
-print('Alerts: ')
-pprint(zap.core.alerts(baseurl=target, apikey=apiKey))
-
-try:
-    response = requests.get("http://172.17.0.1:8090")
-    print(response.text)
-except requests.exceptions.RequestException as e:
-    print(f"Error: {e}")
+    print('Active Scan 완료되었습니다!')
 

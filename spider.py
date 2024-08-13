@@ -2,7 +2,7 @@ import time
 from zapv2 import ZAPv2
 
 target = 'https://public-firing-range.appspot.com'
-
+    
 apiKey = 'paradox0909'
 
 zap = ZAPv2(apikey=apiKey)
