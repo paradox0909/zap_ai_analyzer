@@ -1,4 +1,6 @@
+# wrapper.py
 import time
+import json
 import os
 from pprint import pprint
 from zapv2 import ZAPv2
@@ -19,15 +21,29 @@ def run_spider():
     while int(zap.spider.status(scanID)) < 100:
         print('Spider progress %: {}'.format(zap.spider.status(scanID)))
         time.sleep(1)
-    print('Spider.py scan finished')
+    print('Spider가 완료되었습니다!')
     print('\n'.join(map(str, zap.spider.results(scanID))))
 
 def run_active_scan():
     print('Active Scanning target {}'.format(target))
     scanID = zap.ascan.scan(target)
     while int(zap.ascan.status(scanID)) < 100:
-        print('Scan progress %: {}'.format(zap.ascan.status(scanID)))
+        print('Active Scan Progress %: {}'.format(zap.ascan.status(scanID)))
         time.sleep(5)
-
+    
     print('Active Scan 완료되었습니다!')
+    
+    result = {
+        'Hosts': zap.core.hosts,
+        'Alerts': zap.core.alerts(baseurl=target)
+    }
 
+    filename = get_next_filename()
+    with open(filename, 'w') as f:
+        json.dump(result, f, indent=4)
+    
+    print(f'Result saved to {filename}')
+
+if __name__ == '__main__':
+    run_spider()
+    run_active_scan()
