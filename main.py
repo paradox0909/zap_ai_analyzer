@@ -1,13 +1,13 @@
-# wrapper.py
 import time
 import json
 import os
-from pprint import pprint
 from zapv2 import ZAPv2
 
+target = 'https://public-firing-range.appspot.com/reflected/parameter/body'
+
 apiKey = 'paradox0909'
-target = 'https://public-firing-range.appspot.com'
-zap = ZAPv2(apikey=apiKey, proxies={'http': 'http://127.0.0.1:8080', 'https': 'http://127.0.0.1:8080'})
+
+zap = ZAPv2(apikey=apiKey)
 
 def get_next_filename(prefix='test_json_', extension='.json'):
     i = 1
@@ -16,26 +16,55 @@ def get_next_filename(prefix='test_json_', extension='.json'):
     return f"{prefix}{i}{extension}"
 
 def run_spider():
-    print('Spidering target {}'.format(target))
+    print(f'Spidering target {target}')
     scanID = zap.spider.scan(target)
     while int(zap.spider.status(scanID)) < 100:
-        print('Spider progress %: {}'.format(zap.spider.status(scanID)))
+        print(f'Spider progress %: {zap.spider.status(scanID)}')
         time.sleep(1)
     print('Spider가 완료되었습니다!')
     print('\n'.join(map(str, zap.spider.results(scanID))))
 
 def run_active_scan():
-    print('Active Scanning target {}'.format(target))
+    print(f'Active Scanning target {target}')
     scanID = zap.ascan.scan(target)
     while int(zap.ascan.status(scanID)) < 100:
-        print('Active Scan Progress %: {}'.format(zap.ascan.status(scanID)))
+        print(f'Active Scan Progress %: {zap.ascan.status(scanID)}')
         time.sleep(5)
     
     print('Active Scan 완료되었습니다!')
+
+    st = 0
+    pg = 5000
+    alert_dict = {}
+    alert_count = 0
+    alerts = zap.alert.alerts(baseurl=target, start=st, count=pg)
+    high_risk_alerts = []
+    
+    blacklist = [1, 2]
+    
+    while len(alerts) > 0:
+        print(f'Reading {pg} alerts from {st}')
+        alert_count += len(alerts)
+        
+        for alert in alerts:
+            plugin_id = alert.get('pluginId')
+            risk_level = alert.get('risk')
+            
+            if plugin_id in blacklist:
+                continue
+            
+            if risk_level == 'High':
+                high_risk_alerts.append(alert)
+        
+        st += pg
+        alerts = zap.alert.alerts(baseurl=target, start=st, count=pg)
+    
+    print(f'Total number of alerts: {alert_count}')
+    print(f'Number of high-risk alerts: {len(high_risk_alerts)}')
     
     result = {
         'Hosts': zap.core.hosts,
-        'Alerts': zap.core.alerts(baseurl=target)
+        'Alerts': high_risk_alerts
     }
 
     filename = get_next_filename()
