@@ -3,7 +3,7 @@ import json
 import os
 from zapv2 import ZAPv2
 
-target = 'https://public-firing-range.appspot.com/reflected/parameter/body'
+target = 'http://host.docker.internal'
 
 apiKey = 'paradox0909'
 
@@ -23,6 +23,19 @@ def run_spider():
         time.sleep(1)
     print('Spider가 완료되었습니다!')
     print('\n'.join(map(str, zap.spider.results(scanID))))
+
+def ajax_spider():
+    print("test_code_ajax")
+    print('Ajax Spider target {}'.format(target))
+    scanID = zap.ajaxSpider.scan(target)
+    timeout = time.time() + 60*2
+    while zap.ajaxSpider.status == 'running':
+        if time.time() > timeout:
+            break
+        print('Ajax Spider status' + zap.ajaxSpider.status)
+        time.sleep(2)
+    print('Ajax Spider completed')
+    ajaxResults = zap.ajaxSpider.results(start=0, count=10)
 
 def run_active_scan():
     print(f'Active Scanning target {target}')
@@ -75,4 +88,9 @@ def run_active_scan():
 
 if __name__ == '__main__':
     run_spider()
+    time.sleep(1)
+    # ajax_spider()
+    time.sleep(1)
     run_active_scan()
+    time.sleep(1)
+    print("END CODe")

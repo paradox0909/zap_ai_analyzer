@@ -5,7 +5,7 @@ from pprint import pprint
 from zapv2 import ZAPv2
 
 apiKey = 'paradox0909'
-target = 'https://public-firing-range.appspot.com/reflected/parameter/body'
+target = 'http://127.0.0.1/login.html'
 zap = ZAPv2(apikey=apiKey, proxies={'http': 'http://127.0.0.1:8080', 'https': 'http://127.0.0.1:8080'})
 
 def get_next_filename(prefix='test_json_', extension='.json'):
