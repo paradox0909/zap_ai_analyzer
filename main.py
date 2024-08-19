@@ -20,7 +20,7 @@ def run_spider():
     while int(zap.spider.status(scanID)) < 100:
         print(f'Spider progress %: {zap.spider.status(scanID)}')
         time.sleep(1)
-    print('Spider가 완료되었습니다!')
+    print('Spider completed!')
     print('\n'.join(map(str, zap.spider.results(scanID))))
 
 def ajax_spider():
@@ -43,7 +43,7 @@ def run_active_scan():
         print(f'Active Scan Progress %: {zap.ascan.status(scanID)}')
         time.sleep(5)
     
-    print('Active Scan 완료되었습니다!')
+    print('Active Scan completed!')
 
     st = 0
     pg = 5000
@@ -92,4 +92,4 @@ if __name__ == '__main__':
     time.sleep(1)
     run_active_scan()
     time.sleep(1)
-    print("END CODe")
+    print("END CODE")
