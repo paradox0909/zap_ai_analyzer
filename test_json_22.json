@@ -1,0 +1,9 @@
+{
+    "Hosts": [
+        "172.17.0.3",
+        "host.docker.internal",
+        "ajax.googleapis.com",
+        "public-firing-range.appspot.com"
+    ],
+    "Alerts": []
+}

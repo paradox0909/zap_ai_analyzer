@@ -3,8 +3,7 @@ import json
 import os
 from zapv2 import ZAPv2
 
-target = 'http://host.docker.internal'
-
+target = 'http://172.17.0.3'
 apiKey = 'paradox0909'
 
 zap = ZAPv2(apikey=apiKey)
