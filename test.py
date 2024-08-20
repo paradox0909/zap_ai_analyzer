@@ -1,20 +1,12 @@
-import time
-from pprint import pprint
-from zapv2 import ZAPv2
+search_websource_dir = './websource/search.php'
+login_websource_dir = './websource/login.php'
 
-apiKey = 'changeme'
-target = 'https://public-firing-range.appspot.com'
-zap = ZAPv2(apikey=apiKey, proxies={'http': 'http://127.0.0.1:8080', 'https': 'http://127.0.0.1:8080'})
+with open(search_websource_dir, 'r', encoding='utf-8') as search_file:
+    search_content = search_file.read()
+    print("search.php 내용:")
+    print(search_content)
 
-# TODO : explore the app (Spider, etc) before using the Passive Scan API, Refer the explore section for details
-while int(zap.pscan.records_to_scan) > 0:
-    # Loop until the passive scan has finished
-    print('Records to passive scan : ' + zap.pscan.records_to_scan)
-    time.sleep(2)
-
-print('Passive Scan completed')
-
-# Print Passive scan results/alerts
-print('Hosts: {}'.format(', '.join(zap.core.hosts)))
-print('Alerts: ')
-pprint(zap.core.alerts())
+with open(login_websource_dir, 'r', encoding='utf-8') as login_file:
+    login_content = login_file.read()
+    print("\nlogin.php 내용:")
+    print(login_content)
