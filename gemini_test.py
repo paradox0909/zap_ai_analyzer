@@ -27,10 +27,12 @@ json_data = [
     "url",
     "param",
     "name",
-    ""
 ]
+
+print(json_data)
+
 content = {search_content}, {login_content}
-print("ask:", content )
+
 response = model.generate_content(f"{content} 코드에 대해 설명해줘.")
 
 print(response.text)

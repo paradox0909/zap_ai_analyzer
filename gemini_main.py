@@ -25,8 +25,7 @@ print(web_source)
 
 response = model.generate_content(f"""
 웹 취약점 점검을 한 결과를 json으로 받았고, 이를 토대로 웹 취약점 점검이 정탐인지 오탐인지 판별해보려고 해.{parsed_json} 이게 json 데이터고,
-이게 점검한 웹 소스코드야. {web_source} 확인을 해보고 웹 취약점 점검이 정탐인지 오탐인지 판별해주고, 출력할때는, [search.php : 정탐] [login.php : 오탐] 이렇게 출력해줘.
+이게 점검한 웹 소스코드야. {web_source} 확인을 해보고 웹 취약점 점검이 정탐인지 오탐인지 판별해주고, 출력할때는, [search.php : 정탐] [login.php : 오탐] 이렇게 출력해주고, 출력한 이유도 알려줘.
 """)
-
 
 print(response.text)
