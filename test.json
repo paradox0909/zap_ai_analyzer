@@ -1,0 +1,16 @@
+{
+    "취약점 목록": [
+      {
+        "취약점 명": "SQL 주입",
+        "전체 코드": "$query = \"select * from user where id='{$id}' and pw='{$pw}'\"",
+        "취약한 부분의 코드": "{$id}' and pw='{$pw}'",
+        "이유": "입력값이 쿼리에 직접 포함되어 있어 SQL 주입 공격에 취약합니다."
+      },
+      {
+        "취약점 명": "SQL 주입",
+        "전체 코드": "$query = \" select * from search where content like '%{data}%' \"",
+        "취약한 부분의 코드": "%{data}%",
+        "이유": "입력값이 쿼리에 직접 포함되어 있어 SQL 주입 공격에 취약합니다."
+      }
+    ]
+  }

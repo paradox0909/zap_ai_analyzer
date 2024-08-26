@@ -4,7 +4,7 @@ import os
 from zapv2 import ZAPv2
 import google.generativeai as genai
 
-target = 'http://172.17.0.3'
+target = 'http://host.docker.internal'
 apiKey = 'paradox0909'
 
 search_websource_dir = './websource/search.php'
@@ -90,25 +90,32 @@ def search():
     GOOGLE_API_KEY = "AIzaSyB4mgp-9DoH8njhPp9B66S1wf48TtjNBr0"
     genai.configure(api_key=GOOGLE_API_KEY)
     model = genai.GenerativeModel('gemini-pro')
+
     with open(search_websource_dir, 'r', encoding='utf-8') as search_file:
         search_content = search_file.read()
-
     with open(login_websource_dir, 'r', encoding='utf-8') as login_file:
         login_content = login_file.read()
-
     with open(json_path, 'r', encoding='utf-8') as json_file:
         parsed_json = json.load(json_file)
     
     web_source = f"{login_content}\n{search_content}"
-    
+    response1 = model.generate_content(f"자기소개를 json 형태로 응답 해줘")
+    print(response1.text)
     response = model.generate_content(f"""
-웹 취약점 점검을 한 결과를 json으로 받았고, 이를 토대로 웹 취약점 점검이 정탐인지 오탐인지 판별해보려고 해.{parsed_json} 이게 json 데이터야.
-json 데이터를 너가 전체적으로 봤으면 좋겠어. 
-점검한 웹 소스코드야. {web_source} 이 점검 결과가 실제 영향력이 있는지 "코드기반"으로 확인해줘. 
-"이유를 포함해서 코드의 어느 부분이 취약한지 알려줘". 코드의 전체 부분도 출력 부탁. [취약점 명, 전체 코드,취약한 부분의 코드, 이유] 이런식으로 나눠서.
-""")
-    print(response.text)
+    웹 취약점 점검을 한 결과를 json으로 받았고, 이를 토대로 웹 취약점 점검에 대한 추가 json파일을 받으려고해.{parsed_json} 이게 json 데이터야.
+    json 데이터를 너가 전체적으로 봤으면 좋겠어. 
+    점검한 웹 소스코드야. {web_source} 이 점검 결과가 실제 영향력이 있는지 "코드기반"으로 확인해줘. 
+    "이유를 포함해서 코드의 어느 부분이 취약한지 알려줘". [취약점 명, 전체 코드, 취약한 부분의 코드, 이유] 이런식으로 나눠서 json으로 출력해줘.""")
 
+    print(response.text)
+    """    
+    print(response.text)
+    with open("response.txt", "w", encoding="utf-8") as file:
+        file.write(response.text)
+    data = json.loads(response.text)
+    with open('result.json', 'w', encoding='utf-8') as json_file:
+       json.dump(data, json_file, ensure_ascii=True, indent=4)
+    """
 if __name__ == '__main__':
     run_spider()
 

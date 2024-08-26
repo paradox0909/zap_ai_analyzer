@@ -1,0 +1,135 @@
+삽질
+2024 08 20 
+json파일에서 
+1. url
+2. 공격구문
+3. 공격에 쓰인 파라미터
+4. 공격 메서드
+5. 취약점 명
+과 같이 취약점 검증에 필요한 항목을 해당소스코드와함께 제미니에게 투척해서 정오탐 판별시키기
+===========================================================
+
+
+2024 08 20 오전 8시 24분 30초 학교(단대소고)에서
+Gemini api 테스트중, 에러 발생
+ paradoxx 🚀   ~/Desktop/Paradox/project/zap_ai_anal/zap_ai_analyzer   develop ±  python3 gemini_test.py
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1724109842.193914 4277436 check_gcp_environment_no_op.cc:29] ALTS: Platforms other than Linux and Windows are not supported
+Traceback (most recent call last):
+  File "/Users/paradoxmyung/Desktop/Paradox/project/zap_ai_anal/zap_ai_analyzer/gemini_test.py", line 11, in <module>
+    print(response.text)
+          ^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/google/generativeai/types/generation_types.py", line 436, in text
+    raise ValueError(
+ValueError: Invalid operation: The `response.text` quick accessor requires the response to contain a valid `Part`, but none were returned. Please check the `candidate.safety_ratings` to determine if the response was blocked.
+
+2024 08 20 오전 8시 27분
+response.text를 사용 중, 응답에 유효한 Part 객체가 포함되지 않아서 문제가 발생했다는 것을 알 수 있습니다. 이는 보통 AI의 응답이 안전 필터링에 걸려서 응답이 차단되거나 비어있을 때 발생한다고함.
+
+https://memo772.tistory.com/entry/%EA%B8%B0%ED%83%80-%EC%98%A4%EB%A5%98-Invalid-operation-The-responsetext-quick-accessor-requires-the-response-to-contain-a-valid-Part-but-none-were-returned-Please-check-the-candidatesafetyratings-to-determine-if-the-response-was-blocked
+
+
+그제는 됐는데 왜 오늘은 안되나 싶어서
+다시 한번 돌려봤는데 됨.
+
+Gemini : “권현준은 한국의 해커로, 2005년 게임 개발사 엔씨소프트를 해킹해 소스 코드를 유출시킨 사건으로 유명하다”
+
+8/20 오전 8시 41분
+Php 소스코드를 gemini에게 보내는 과정에서 이러한 오류를 출력함.
+￼
+해석해보면, Blob 객체를 생성할 때 예상된 데이터 타입이 아니기 때문에. 오류가 발생한다.
+아마 Blob안에 php 소스코드가 들어가면서 오류가 나는듯함.
+현재 class는 set이기 때문에 (집합)
+Gemini에게 String, dict, list로 보내면 될듯?
+ask = ask= {search_content}, {login_content} 에서,
+ask = f"{search_content}\n\n{login_content}" 형변환을 해줌
+
+
+08/20 오전 8시 53분
+ask= {search_content}, {login_content}
+print("ask:", ask)
+response = model.generate_content(ask+"코드에 대해 설명해줘.")
+근데 안됨.
+tuple과 str은 병합이 불가함
+형변환에 대해 씨게 배우는중임;
+￼
+
+response = model.generate_content(f"{ask} 코드에 대해 설명해줘.")
+코드를 바꿈
+Format string 사용.
+
+￼
+ㅋㅋㅋㅋㅋㅋㅋㅋㅋ
+보안에 대한 문제 없이도 지적을 해줌.ㅋㅋ
+
+
+일단 json파일에서 url, 공격구문, 공격에 쓰인 파라미터, 공격 메서드, 취약점 명을 python으로 가져와야하기때문에 json을 따로 parse해줘야할듯함.
+parse하는 코드 짜러 가봄 (8/20 오전 9시 19분 33초)
+
+구글에 python json parser 검색해봄.
+https://ctkim.tistory.com/entry/%ED%8C%8C%EC%9D%B4%EC%8D%AC-json-%EB%AA%A8%EB%93%88
+설명이 잘 되어 있음.
+
+ 8월 20일 오후 3시 42분 
+어떻게 해야할지 감이 안잡힘
+
+8월 21일 오전 10시 13분
+어떻게 해야할지 여전히 감이 안잡힘;
+json값 파싱이안됨
+
+json_data = [
+    "method",
+    "evidence",
+    "description",
+    "inputVector",
+    "url",
+    "param",
+    "name",
+]
+이렇게하고 
+key값에 맞는 외부 json파일
+
+저 위에 있는 항목들만 불러오고 싶은데 그게 안됨.
+
+제메니한테 그냥 전부 다 꼴아박아보자.
+
+8/21 오전 10시 52분
+https://www.google.com/search?q=TypeError%3A+unhashable+type%3A+%27dict%27&rlz=1C5CHFA_enKR1050KR1050&oq=TypeError%3A+unhashable+type%3A+%27dict%27&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIGCAEQRRg60gEHMTU4ajBqN6gCALACAA&sourceid=chrome&ie=UTF-8
+
+또 type error
+
+8/21 오전 11시 06분
+￼
+gemini는 바보다.
+
+8/21 오전 11시 59분 10초
+￼
+￼
+
+8월 21일 오후 10시 49분
+main.py + gemini_main.py 병합 과정 거치려고함
+어떻게 할까? 고민해본 결과
+1. .json file로 저장하던 코드를 수정해서 이름이 동일한 파일로 저장 << 파이썬 코드를 2회 이상 실행 시 덮어쓰기까지 포함한 로직
+2. gemini가 json을 읽을 수 있게끔
+
+오후 11시 25분
+gemini가 대답을 잘 안해서 대답을 잘 할 수 있게끔 유도중.
+Spider랑 Active scan 때리고 gemini에게 대답을 받으니 너무 느리다.
+한 2분 이상씩 걸리는듯
+
+8월 23일 오전 03시 03분
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1724349678.960795 5883961 check_gcp_environment_no_op.cc:29] ALTS: Platforms other than Linux and Windows are not supported
+Traceback (most recent call last):
+  File "/Users/paradoxmyung/Desktop/Paradox/project/zap_ai_anal/zap_ai_analyzer/main.py", line 118, in <module>
+    search()
+  File "/Users/paradoxmyung/Desktop/Paradox/project/zap_ai_anal/zap_ai_analyzer/main.py", line 110, in search
+    print(response.text)
+          ^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/google/generativeai/types/generation_types.py", line 436, in text
+    raise ValueError(
+ValueError: Invalid operation: The `response.text` quick accessor requires the response to contain a valid `Part`, but none were returned. Please check the `candidate.safety_ratings` to determine if the response was blocked.
+
+8월 23일 오전 7시 50분
+https://ai.google.dev/gemini-api/docs/json-mode?hl=ko&_gl=1*buicv5*_up*MQ..*_ga*MTY4NjYwMTI1My4xNzI0MzY2OTc0*_ga_P1DBVKWT6V*MTcyNDM2Njk3NC4xLjAuMTcyNDM2Njk3NC4wLjAuMTU4MzM0NzI0Mw..&lang=python
+
